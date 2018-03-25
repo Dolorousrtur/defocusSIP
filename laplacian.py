@@ -6,29 +6,15 @@ import scipy.sparse.linalg
 
 
 def _rolling_block(A, block=(3, 3)):
-    """Applies sliding window to given matrix."""
     shape = (A.shape[0] - block[0] + 1, A.shape[1] - block[1] + 1) + block
     strides = (A.strides[0], A.strides[1]) + A.strides
     return as_strided(A, shape=shape, strides=strides)
 
 
 def compute_laplacian(img, mask=None, eps=10**(-7), win_rad=1):
-    """Computes Matting Laplacian for a given image.
-
-    Args:
-        img: 3-dim numpy matrix with input image
-        mask: mask of pixels for which Laplacian will be computed.
-            If not set Laplacian will be computed for all pixels.
-        eps: regularization parameter controlling alpha smoothness
-            from Eq. 12 of the original paper. Defaults to 1e-7.
-        win_rad: radius of window used to build Matting Laplacian (i.e.
-            radius of omega_k in Eq. 12).
-    Returns: sparse matrix holding Matting Laplacian.
-    """
 
     win_size = (win_rad * 2 + 1) ** 2
     h, w, d = img.shape
-    # Number of window centre indices in h, w axes
     c_h, c_w = h - 2 * win_rad, w - 2 * win_rad
     win_diam = win_rad * 2 + 1
 
